@@ -1,7 +1,6 @@
 services:
   rproxy:
     image: nginx:1.27.4
-    container_name: rproxy
     command:
       ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/conf.d/nginx.conf"]
     ports:
