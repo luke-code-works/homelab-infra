@@ -25,3 +25,6 @@ networks:
   traffix:
     name: traffix
     external: true
+  traffix_internal:
+    name: traffix_internal
+    external: true
