@@ -1,2 +1,3 @@
 #!/bin/bash
-docker compose -f ../docker-compose.yml down
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+docker compose -p "proxy" -f "$SCRIPT_DIR/../docker-compose.yml" down
