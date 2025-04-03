@@ -11,6 +11,7 @@ services:
       - rproxy_config:/etc/nginx/conf.d
     networks:
       - traffix
+      - traffix_internal
     restart: unless-stopped
     logging:
       driver: "json-file"

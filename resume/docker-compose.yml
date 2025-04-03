@@ -1,0 +1,19 @@
+services:
+  app:
+    image: luke-code-works/resume:latest
+    container_name: app
+    ports:
+      - "80:80"
+    networks:
+      - traffix_internal
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  traffix_internal:
+    name: traffix_internal
+    external: true
