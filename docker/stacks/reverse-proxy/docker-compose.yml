@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  reverse-proxy:
+    image: nginx:1.27.4
+    container_name: reverse-proxy
+    command:
+      ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/conf.d/nginx.conf"]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - reverse-proxy-config:/etc/nginx/conf.d:ro
+    networks:
+      reverse-proxy:
+        ipv4_address: 10.89.0.1
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  reverse-proxy-config:
+
+networks:
+  reverse-proxy:
+    name: reverse-proxy
+    external: true
