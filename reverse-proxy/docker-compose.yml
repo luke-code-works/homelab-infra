@@ -1,16 +1,16 @@
 services:
-  reverse-proxy:
+  rproxy:
     image: nginx:1.27.4
-    container_name: reverse-proxy
+    container_name: rproxy
     command:
       ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/conf.d/nginx.conf"]
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - reverse-proxy-config:/etc/nginx/conf.d
+      - rproxy_config:/etc/nginx/conf.d
     networks:
-      - reverse-proxy
+      - traffix
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -19,9 +19,9 @@ services:
         max-file: "3"
 
 volumes:
-  reverse-proxy-config:
+  rproxy_config:
 
 networks:
-  reverse-proxy:
-    name: reverse-proxy
+  traffix:
+    name: traffix
     external: true
