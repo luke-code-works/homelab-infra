@@ -1,16 +1,20 @@
 services:
-  app:
+  resume:
     image: luke-code-works/resume:latest
-    ports:
-      - "80:80"
-    networks:
-      - traffix_internal
     restart: unless-stopped
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    volumes:
+      - resume_config:/usr/share/nginx/html/browser/config
+    networks:
+      - traffix_internal
+
+volumes:
+  resume_config:
+    name: resume_config
 
 networks:
   traffix_internal:
