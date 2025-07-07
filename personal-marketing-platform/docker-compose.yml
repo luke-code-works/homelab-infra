@@ -8,14 +8,14 @@ services:
         max-size: "10m"
         max-file: "3"
     volumes:
-      - resume_config:/usr/share/nginx/html/browser/config
+      - resume-config:/usr/share/nginx/html/browser/config
     networks:
-      - traffix_internal
+      - traffix-internal
 
 volumes:
-  resume_config:
+  resume-config:
 
 networks:
-  traffix_internal:
-    name: traffix_internal
+  traffix-internal:
+    name: traffix-internal
     external: true
