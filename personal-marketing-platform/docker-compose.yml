@@ -14,7 +14,6 @@ services:
 
 volumes:
   resume_config:
-    name: resume_config
 
 networks:
   traffix_internal:
