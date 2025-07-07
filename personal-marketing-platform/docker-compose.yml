@@ -10,12 +10,12 @@ services:
     volumes:
       - resume-config:/usr/share/nginx/html/browser/config
     networks:
-      - traffix_internal
+      - traffix-internal
 
 volumes:
   resume-config:
 
 networks:
-  traffix_internal:
-    name: traffix_internal
+  traffix-internal:
+    name: traffix-internal
     external: true
