@@ -15,16 +15,41 @@ services:
     volumes:
       - reverse-proxy-config:/etc/nginx/conf.d
     networks:
-      - traffix
       - traffix-internal
+      - traffix-ingress
+  certbot:
+    image: certbot/certbot:latest
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo '0 0,12 * * * certbot renew' | crontab -
+        crond -f & CRON_PID=$$!
+        trap 'kill -TERM $$CRON_PID; wait $$CRON_PID; exit 0' TERM
+        wait $$CRON_PID
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - certbot-config:/etc/letsencrypt
+      - certbot-data:/var/lib/letsencrypt
+    networks:
+      - traffix-internal
+      - traffix-outbound
 
 volumes:
   reverse-proxy-config:
 
 networks:
-  traffix:
-    name: traffix
+  traffix-ingress:
+    name: traffix-ingress
     external: true
   traffix-internal:
     name: traffix-internal
+    external: true
+  traffix-outbound:
+    name: traffix-outbound
     external: true
