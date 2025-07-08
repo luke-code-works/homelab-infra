@@ -1,8 +1,13 @@
 services:
   reverse-proxy:
-    image: nginx:1.29
+    image: nginx:1.29-alpine
     command:
-      ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/conf.d/nginx.conf"]
+      - sh
+      - -c
+      - |
+        echo '0 */12 * * * nginx -s reload -g "daemon off;" -c /etc/nginx/conf.d/nginx.conf' | crontab -
+        crond
+        exec nginx -g "daemon off;" -c /etc/nginx/conf.d/nginx.conf
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -23,7 +28,7 @@ services:
       - sh
       - -c
       - |
-        echo '0 0,12 * * * certbot renew' | crontab -
+        echo '0 */12 * * * certbot renew' | crontab -
         crond -f & CRON_PID=$$!
         trap 'kill -TERM $$CRON_PID; wait $$CRON_PID; exit 0' TERM
         wait $$CRON_PID
@@ -42,6 +47,8 @@ services:
 
 volumes:
   reverse-proxy-config:
+  certbot-config:
+  certbot-data:
 
 networks:
   traffix-ingress:
