@@ -1,0 +1,62 @@
+services:
+  reverse-proxy:
+    image: nginx:1.29-alpine
+    command:
+      - sh
+      - -c
+      - |
+        echo '0 */12 * * * nginx -s reload -g "daemon off;" -c /etc/nginx/conf.d/nginx.conf' | crontab -
+        crond
+        exec nginx -g "daemon off;" -c /etc/nginx/conf.d/nginx.conf
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - reverse-proxy-config:/etc/nginx/conf.d
+    networks:
+      - traffix-internal
+      - traffix-ingress
+  certbot:
+    image: certbot/certbot:latest
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo '0 */12 * * * certbot renew' | crontab -
+        crond -f & CRON_PID=$$!
+        trap 'kill -TERM $$CRON_PID; wait $$CRON_PID; exit 0' TERM
+        wait $$CRON_PID
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - certbot-config:/etc/letsencrypt
+      - certbot-data:/var/lib/letsencrypt
+    networks:
+      - traffix-internal
+      - traffix-outbound
+
+volumes:
+  reverse-proxy-config:
+  certbot-config:
+  certbot-data:
+
+networks:
+  traffix-ingress:
+    name: traffix-ingress
+    external: true
+  traffix-internal:
+    name: traffix-internal
+    external: true
+  traffix-outbound:
+    name: traffix-outbound
+    external: true
