@@ -1,6 +1,6 @@
 services:
   resume:
-    image: luke-code-works/resume:latest
+    image: luke-code-works/personal-marketing-platform/resume:latest
     restart: unless-stopped
     logging:
       driver: "json-file"
