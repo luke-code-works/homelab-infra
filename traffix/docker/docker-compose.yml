@@ -1,6 +1,6 @@
 services:
   reverse-proxy:
-    image: nginx:1.29-alpine
+    image: nginx:stable-alpine
     command:
       - sh
       - -c
